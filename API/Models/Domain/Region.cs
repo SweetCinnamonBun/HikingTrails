@@ -5,17 +5,11 @@ using System.Threading.Tasks;
 
 namespace API.Models.Domain
 {
-    public class Trail
+    public class Region
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
+        public required string Code { get; set; }
         public required string Name { get; set; }
-        public required string Description { get; set; }
         public string? ImageUrl { get; set; }
-        public double LengthInKm { get; set; }
-        public string? Duration { get; set; }
-        public required string DifficultyId { get; set; }
-
-
-
     }
 }
