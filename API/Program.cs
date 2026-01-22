@@ -18,6 +18,8 @@ builder.Services.AddDbContext<HikingContext>(opt =>
 });
 
 builder.Services.AddScoped<ITrailsRepository, SQLTrailsRepository>();
+builder.Services.AddScoped<IRegionsRepository, SQLRegionsRepository>();
+
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<AutoMapperProfiles>();

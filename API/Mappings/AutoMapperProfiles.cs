@@ -20,6 +20,8 @@ namespace API.Mappings
 
             CreateMap<Difficulty, DifficultyDto>().ReverseMap();
             CreateMap<Region, RegionDto>().ReverseMap();
+            CreateMap<Region, CreateRegionDto>().ReverseMap();
+            CreateMap<Region, UpdateRegionDto>().ReverseMap();
         }
     }
 }
