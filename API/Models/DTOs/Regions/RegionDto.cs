@@ -2,17 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Models.DTOs.Trails;
 
-namespace API.Models.Domain
+namespace API.Models.DTOs.Regions
 {
-    public class Region
+    public class RegionDto
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public required string Id { get; set; }
         public required string Code { get; set; }
         public required string Name { get; set; }
         public string? ImageUrl { get; set; }
 
         // Navigation properties
-        public List<Trail> Trails = [];
+        public List<TrailDto> Trails = [];
     }
 }

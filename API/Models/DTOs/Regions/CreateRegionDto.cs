@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Models.Domain
+namespace API.Models.DTOs.Regions
 {
-    public class Region
+    public class CreateRegionDto
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+
         public required string Code { get; set; }
         public required string Name { get; set; }
         public string? ImageUrl { get; set; }
-
-        // Navigation properties
-        public List<Trail> Trails = [];
     }
 }

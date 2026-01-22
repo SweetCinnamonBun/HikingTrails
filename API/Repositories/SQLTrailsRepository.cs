@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
 using API.Data;
 using API.Models.Domain;
@@ -64,14 +65,32 @@ namespace API.Repositories
 
         }
 
-        public Task<Trail?> GetByIdAsync(string id)
+        public async Task<Trail?> GetByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            var existingTrail = await context.Trails.Include("Difficulty").FirstOrDefaultAsync(x => x.Id == id);
+            if (existingTrail == null) return null;
+
+            return existingTrail;
         }
 
-        public Task<Trail?> UpdateAsync(string id, Trail trail)
+        public async Task<Trail?> UpdateAsync(string id, Trail trail)
         {
-            throw new NotImplementedException();
+            var existingTrail = await context.Trails.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (existingTrail == null)
+            {
+                return null;
+            }
+
+            existingTrail.Name = trail.Name;
+            existingTrail.Description = trail.Description;
+            existingTrail.LengthInKm = trail.LengthInKm;
+            existingTrail.ImageUrl = trail.ImageUrl;
+            existingTrail.DifficultyId = trail.DifficultyId;
+            existingTrail.RegionId = trail.RegionId;
+
+            await context.SaveChangesAsync();
+            return existingTrail;
         }
     }
 }

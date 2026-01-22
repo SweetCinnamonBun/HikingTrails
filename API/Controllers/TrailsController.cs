@@ -31,8 +31,18 @@ namespace API.Controllers
             return Ok(mapper.Map<List<TrailDto>>(trails));
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTrailById([FromRoute] string id)
+        {
+            var trailDomain = await trailsRepository.GetByIdAsync(id);
+
+            if (trailDomain == null) return NotFound();
+
+            return Ok(mapper.Map<TrailDto>(trailDomain));
+        }
+
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateTrailDto dto)
+        public async Task<IActionResult> CreateTrail([FromBody] CreateTrailDto dto)
         {
             if (ModelState.IsValid)
             {
@@ -45,6 +55,17 @@ namespace API.Controllers
 
             return BadRequest(ModelState);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTrailById([FromRoute] string id)
+        {
+            var existingTrail = await trailsRepository.DeleteAsync(id);
+
+            if (existingTrail == null) return NotFound("Invalid ID");
+
+            return NoContent();
+        }
+
 
     }
 }
