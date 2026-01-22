@@ -12,7 +12,7 @@ namespace API.Models.Domain
         public required string Description { get; set; }
         public string? ImageUrl { get; set; }
         public double LengthInKm { get; set; }
-        public TimeSpan Duration { get; set; }
+        public int DurationInMinutes { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public required string DifficultyId { get; set; }
         public required string RegionId { get; set; }

@@ -56,6 +56,23 @@ namespace API.Controllers
             return BadRequest(ModelState);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTrail([FromRoute] string id, [FromBody] UpdateTrailDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                var trailDomain = mapper.Map<Trail>(dto);
+
+                trailDomain = await trailsRepository.UpdateAsync(id, trailDomain);
+
+                if (trailDomain == null) return NotFound();
+
+                return Ok(mapper.Map<TrailDto>(trailDomain));
+            }
+
+            return BadRequest(ModelState);
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTrailById([FromRoute] string id)
         {

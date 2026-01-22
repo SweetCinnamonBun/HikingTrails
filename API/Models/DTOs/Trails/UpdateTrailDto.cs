@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace API.Models.DTOs.Trails
 {
-    public class CreateTrailDto
+    public class UpdateTrailDto
     {
         public required string Name { get; set; }
         public required string Description { get; set; }

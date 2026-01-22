@@ -37,7 +37,7 @@ namespace API.Repositories
 
         public async Task<List<Trail>> GetAllAsync(string? filterOn = null, string? filterQuery = null, string? sortBy = null, bool isAscending = true, int page = 1, int pageSize = 50)
         {
-            var trails = context.Trails.AsQueryable();
+            var trails = context.Trails.Include("Difficulty").Include("Region").AsQueryable();
 
             if (string.IsNullOrWhiteSpace(filterOn) == false && string.IsNullOrWhiteSpace(filterQuery) == false)
             {
@@ -86,6 +86,7 @@ namespace API.Repositories
             existingTrail.Description = trail.Description;
             existingTrail.LengthInKm = trail.LengthInKm;
             existingTrail.ImageUrl = trail.ImageUrl;
+            existingTrail.DurationInMinutes = trail.DurationInMinutes;
             existingTrail.DifficultyId = trail.DifficultyId;
             existingTrail.RegionId = trail.RegionId;
 

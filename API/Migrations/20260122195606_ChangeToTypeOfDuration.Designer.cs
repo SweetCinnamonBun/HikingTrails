@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(HikingContext))]
-    partial class HikingContextModelSnapshot : ModelSnapshot
+    [Migration("20260122195606_ChangeToTypeOfDuration")]
+    partial class ChangeToTypeOfDuration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,23 +37,6 @@ namespace API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Difficulties");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "2a755f9c-9ee0-4865-b6fa-348bfa1959ba",
-                            Name = "Easy"
-                        },
-                        new
-                        {
-                            Id = "72b0281e-31ec-4c8f-a4ea-337a4b9a4a64",
-                            Name = "Medium"
-                        },
-                        new
-                        {
-                            Id = "7d633f68-0acf-482e-a1a3-7eb03689ec2f",
-                            Name = "Hard"
-                        });
                 });
 
             modelBuilder.Entity("API.Models.Domain.Region", b =>
@@ -72,47 +58,6 @@ namespace API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Region");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "f7248fc3-2585-4efb-8d1d-1c555f4087f6",
-                            Code = "AKL",
-                            ImageUrl = "https://images.pexels.com/photos/5169056/pexels-photo-5169056.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-                            Name = "Auckland"
-                        },
-                        new
-                        {
-                            Id = "6884f7d7-ad1f-4101-8df3-7a6fa7387d81",
-                            Code = "NTL",
-                            Name = "Northland"
-                        },
-                        new
-                        {
-                            Id = "14ceba71-4b51-4777-9b17-46602cf66153",
-                            Code = "BOP",
-                            Name = "Bay Of Plenty"
-                        },
-                        new
-                        {
-                            Id = "cfa06ed2-bf65-4b65-93ed-c9d286ddb0de",
-                            Code = "WGN",
-                            ImageUrl = "https://images.pexels.com/photos/4350631/pexels-photo-4350631.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-                            Name = "Wellington"
-                        },
-                        new
-                        {
-                            Id = "906cb139-415a-4bbb-a174-1a1faf9fb1f6",
-                            Code = "NSN",
-                            ImageUrl = "https://images.pexels.com/photos/13918194/pexels-photo-13918194.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-                            Name = "Nelson"
-                        },
-                        new
-                        {
-                            Id = "f077a22e-4248-4bf6-b564-c7cf4e250263",
-                            Code = "STL",
-                            Name = "Southland"
-                        });
                 });
 
             modelBuilder.Entity("API.Models.Domain.Trail", b =>
