@@ -24,10 +24,10 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTrails([FromQuery] string? filterOn, [FromQuery] string? filterQuery, [FromQuery] string? sortBy,
+        public async Task<IActionResult> GetTrails([FromQuery] string? filterOn, [FromQuery] string? filterQuery, [FromQuery] List<string>? difficulties, [FromQuery] string? sortBy,
             [FromQuery] bool isAscending, [FromQuery] int page = 1, [FromQuery] int pageSize = 50)
         {
-            var trails = await trailsRepository.GetAllAsync(filterOn, filterQuery, sortBy, isAscending, page, pageSize);
+            var trails = await trailsRepository.GetAllAsync(filterOn, filterQuery, difficulties, sortBy, isAscending, page, pageSize);
             return Ok(mapper.Map<List<TrailDto>>(trails));
         }
 

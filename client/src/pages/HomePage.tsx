@@ -5,6 +5,8 @@ import Card from "../components/Card";
 import FilterDropdownDifficulty from "../components/FilterDropdownDifficulty";
 import { useTrails } from "../lib/hooks/useTrails";
 import type { Trail } from "../types/trail";
+import { useQuery } from "@tanstack/react-query";
+import agent from "../lib/api/agent";
 
 type Difficulty = "Easy" | "Medium" | "Hard";
 
@@ -37,7 +39,16 @@ const HomePage = () => {
     }));
   };
 
-  const { trails } = useTrails();
+  const difficultyQuery = `difficulties=${encodeURIComponent("Hard")}&difficulties=${encodeURIComponent("Easy")}`
+
+   const { data: trails, isLoading: isLoadingTrails } = useQuery({
+        queryKey: ["trails"],
+        queryFn: async () => {
+            const response = await agent.get(`/api/trails?${difficultyQuery}`)
+            return response.data;
+        }
+    })
+
 
   console.log(trails)
   
