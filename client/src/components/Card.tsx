@@ -1,8 +1,14 @@
 import React from "react";
 import { GoArrowBoth } from "react-icons/go";
 import { IoTimeOutline } from "react-icons/io5";
+import type { Trail } from "../types/trail";
 
-const Card = () => {
+
+interface CardProps {
+  trail: Trail;
+};
+
+const Card: React.FC<CardProps> = ({ trail }) => {
   return (
     <div className="bg-white rounded-3xl border border-black overflow-hidden">
       <figure className="h-56 w-full overflow-hidden">
@@ -14,28 +20,24 @@ const Card = () => {
       </figure>
 
       <div className="p-4 space-y-2">
-        <h3 className="text-xl font-semibold">
-          Korpinkierros, Nuuksio National Park
-        </h3>
+        <h3 className="text-xl font-semibold">{trail?.name}</h3>
 
         <div className="difficulty">
-          <span className="px-4 text-sm py-1 rounded-lg bg-red-300">Easy</span>
+          <span className="px-4 text-sm py-1 rounded-lg bg-red-300">
+            {trail?.difficulty?.name}
+          </span>
         </div>
 
         <div className="basic-info text-md flex items-center gap-4">
           <span className="flex items-center gap-1">
-            <GoArrowBoth /> 8.8 km
+            <GoArrowBoth /> {trail?.lengthInKm} km
           </span>
           <span className="flex items-center gap-1">
-            <IoTimeOutline /> 4 h
+            <IoTimeOutline /> {trail?.durationInMinutes / 60} h
           </span>
         </div>
 
-        <div className="description text-gray-700 text-sm">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate
-          expedita sit, nemo, voluptates repellendus aperiam unde delectus
-          officiis voluptatem dolores recusandae minima in quibusdam quidem?
-        </div>
+        <div className="description text-gray-700 text-sm">{trail?.description}</div>
       </div>
     </div>
   );

@@ -3,6 +3,8 @@ import { GoArrowBoth } from "react-icons/go";
 import { IoLocation, IoTimeOutline } from "react-icons/io5";
 import Card from "../components/Card";
 import FilterDropdownDifficulty from "../components/FilterDropdownDifficulty";
+import { useTrails } from "../lib/hooks/useTrails";
+import type { Trail } from "../types/trail";
 
 type Difficulty = "Easy" | "Medium" | "Hard";
 
@@ -34,6 +36,10 @@ const HomePage = () => {
       page: 1, 
     }));
   };
+
+  const { trails } = useTrails();
+
+  console.log(trails)
   
 
   return (
@@ -70,12 +76,9 @@ const HomePage = () => {
           <FilterDropdownDifficulty  values={filters.difficulties} onChange={handleDifficultyChange} />
         </div>
         <div className="grid grid-cols-3 gap-4">
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
+          {trails?.map((trail: Trail) => (
+            <Card trail={trail} />
+          ))}
         </div>
       </section>
     </div>
