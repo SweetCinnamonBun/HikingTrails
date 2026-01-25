@@ -43,7 +43,6 @@ const FilterDropdownDifficulty: React.FC<FilterDropdownProps> = ({
 
   return (
     <div className="relative w-56">
-      {/* Button */}
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -56,8 +55,6 @@ const FilterDropdownDifficulty: React.FC<FilterDropdownProps> = ({
         </span>
         <span>▾</span>
       </button>
-
-      {/* Dropdown */}
       {open && (
         <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-50">
           {difficulties.map((diff) => (

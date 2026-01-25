@@ -36,7 +36,11 @@ namespace API.Repositories
         }
 
         public async Task<List<Trail>> GetAllAsync(string? filterOn = null,
-         string? filterQuery = null, List<string>? difficulties = null, double? minKm = null, double? maxKm = null,
+         string? filterQuery = null, List<string>? difficulties = null,
+          double? minKm = null,
+          double? maxKm = null,
+          int? minDuration = null,
+          int? maxDuration = null,
          string? sortBy = null, bool isAscending = true, int page = 1, int pageSize = 50)
         {
             var trails = context.Trails.Include("Difficulty").Include("Region").AsQueryable();
@@ -53,6 +57,16 @@ namespace API.Repositories
             if (difficulties != null && difficulties.Count != 0)
             {
                 trails = trails.Where(t => difficulties.Contains(t.Difficulty.Name));
+            }
+
+            if (minDuration.HasValue)
+            {
+                trails = trails.Where(x => x.DurationInMinutes >= minDuration.Value);
+            }
+
+            if (maxDuration.HasValue)
+            {
+                trails = trails.Where(x => x.DurationInMinutes <= maxDuration.Value);
             }
 
             // Kilometer filtering

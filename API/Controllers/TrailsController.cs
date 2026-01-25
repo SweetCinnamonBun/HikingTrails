@@ -29,10 +29,12 @@ namespace API.Controllers
         [FromQuery] List<string>? difficulties,
         [FromQuery] double? minKm,
         [FromQuery] double? maxKm,
+        [FromQuery] int? minDuration,
+        [FromQuery] int? maxDuration,
         [FromQuery] string? sortBy,
             [FromQuery] bool isAscending, [FromQuery] int page = 1, [FromQuery] int pageSize = 50)
         {
-            var trails = await trailsRepository.GetAllAsync(filterOn, filterQuery, difficulties, minKm, maxKm, sortBy, isAscending, page, pageSize);
+            var trails = await trailsRepository.GetAllAsync(filterOn, filterQuery, difficulties, minKm, maxKm, minDuration, maxDuration, sortBy, isAscending, page, pageSize);
             return Ok(mapper.Map<List<TrailDto>>(trails));
         }
 

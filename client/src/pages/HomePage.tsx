@@ -8,11 +8,17 @@ import type { Difficulty, Trail } from "../types/trail";
 import { useQuery } from "@tanstack/react-query";
 import agent from "../lib/api/agent";
 import KilometerFiltering from "../components/KilometerFiltering";
+import DurationFiltering from "../components/DurationFiltering";
 
 type KilometerRange = {
   min?: number;
   max?: number;
 };
+
+interface DurationRange {
+  min?: number;
+  max?: number;
+}
 
 type Filters = {
   search?: string;
@@ -22,18 +28,20 @@ type Filters = {
   isAscending?: boolean;
   difficulties: Difficulty[];
   kilometers?: KilometerRange;
+  duration?: DurationRange;
 };
 
 const HomePage = () => {
-  const [filters, setFilters] = useState<Filters>({
-    search: "",
-    page: 1,
-    pageSize: 50,
-    sortBy: "createdAt",
-    isAscending: false,
-    difficulties: [],
-    kilometers: {},
-  });
+const [filters, setFilters] = useState<Filters>({
+  search: "",
+  page: 1,
+  pageSize: 50,
+  sortBy: "createdAt",
+  isAscending: false,
+  difficulties: [],
+  kilometers: {},
+  duration: {},
+});
 
   // Difficulty query string
   const difficultyQuery = filters.difficulties
@@ -49,7 +57,12 @@ const HomePage = () => {
       : null,
   ].filter(Boolean);
 
-  const queryParts = [...difficultyQuery, ...kilometerQuery].join("&");
+  const durationQuery = [
+  filters.duration?.min !== undefined ? `minDuration=${filters.duration.min}` : null,
+  filters.duration?.max !== undefined ? `maxDuration=${filters.duration.max}` : null,
+].filter(Boolean);
+
+  const queryParts = [...difficultyQuery, ...kilometerQuery, ...durationQuery].join("&");
 
   const queryString = queryParts;
 
@@ -77,6 +90,17 @@ const HomePage = () => {
       page: 1,
     }));
   };
+
+  const handleDurationChange = (range: DurationRange) => {
+  setFilters((prev) => ({
+    ...prev,
+    duration: {
+      min: range.min ? range.min * 60 : undefined,
+      max: range.max ? range.max * 60 : undefined,
+    },
+    page: 1,
+  }));
+};
 
   console.log(trails);
   console.log(filters);
@@ -120,6 +144,12 @@ const HomePage = () => {
             value={filters.kilometers ?? {}}
             onChange={handleKilometersChange}
           />
+          <DurationFiltering
+  value={filters.duration}
+  onChange={handleDurationChange}
+  minDuration={0}
+  maxDuration={10}
+/>
         </div>
         <div className="grid grid-cols-3 gap-4">
           {trails?.map((trail: Trail) => (

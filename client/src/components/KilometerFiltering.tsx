@@ -28,7 +28,6 @@ const KilometerFiltering: React.FC<KilometerFilteringProps> = ({
         <span className="text-sm">Kilometer</span>
         <span>▾</span>
       </button>
-
       {open && (
         <div className="absolute top-full left-0 mt-1 w-72 bg-white border border-gray-300 rounded-lg shadow-lg z-51">
           <div className="flex flex-col">
@@ -63,7 +62,6 @@ const KilometerFiltering: React.FC<KilometerFilteringProps> = ({
                 />
               </label>
             </div>
-
             <div className="self-end p-3">
               <button
                 type="button"
