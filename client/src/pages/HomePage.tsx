@@ -4,11 +4,15 @@ import { IoLocation, IoTimeOutline } from "react-icons/io5";
 import Card from "../components/Card";
 import FilterDropdownDifficulty from "../components/FilterDropdownDifficulty";
 import { useTrails } from "../lib/hooks/useTrails";
-import type { Trail } from "../types/trail";
+import type { Difficulty, Trail } from "../types/trail";
 import { useQuery } from "@tanstack/react-query";
 import agent from "../lib/api/agent";
+import KilometerFiltering from "../components/KilometerFiltering";
 
-type Difficulty = "Easy" | "Medium" | "Hard";
+type KilometerRange = {
+  min?: number;
+  max?: number;
+};
 
 type Filters = {
   search?: string;
@@ -17,6 +21,7 @@ type Filters = {
   sortBy?: string;
   isAscending?: boolean;
   difficulties: Difficulty[];
+  kilometers?: KilometerRange;
 };
 
 const HomePage = () => {
@@ -27,31 +32,54 @@ const HomePage = () => {
     sortBy: "createdAt",
     isAscending: false,
     difficulties: [],
+    kilometers: {},
   });
 
-  const [difficultyFilter, setDifficultyFilter] = useState<Difficulty | "">("");
+  // Difficulty query string
+  const difficultyQuery = filters.difficulties
+    .map((x) => `difficulties=${encodeURIComponent(x.name)}`)
 
+  // Kilometers query string
+  const kilometerQuery = [
+    filters.kilometers?.min !== undefined
+      ? `minKm=${filters.kilometers.min}`
+      : null,
+    filters.kilometers?.max !== undefined
+      ? `maxKm=${filters.kilometers.max}`
+      : null,
+  ].filter(Boolean);
+
+  const queryParts = [...difficultyQuery, ...kilometerQuery].join("&");
+
+  const queryString = queryParts;
+
+  const { data: trails, isLoading: isLoadingTrails } = useQuery({
+    queryKey: ["trails", filters],
+    queryFn: async () => {
+      const response = await agent.get(`/api/trails?${queryString}`);
+      return response.data;
+    },
+  });
+
+  // handle change functions
   const handleDifficultyChange = (values: Difficulty[]) => {
     setFilters((prev) => ({
       ...prev,
       difficulties: values,
-      page: 1, 
+      page: 1,
     }));
   };
 
-  const difficultyQuery = `difficulties=${encodeURIComponent("Hard")}&difficulties=${encodeURIComponent("Easy")}`
+  const handleKilometersChange = (range: KilometerRange) => {
+    setFilters((prev) => ({
+      ...prev,
+      kilometers: range,
+      page: 1,
+    }));
+  };
 
-   const { data: trails, isLoading: isLoadingTrails } = useQuery({
-        queryKey: ["trails"],
-        queryFn: async () => {
-            const response = await agent.get(`/api/trails?${difficultyQuery}`)
-            return response.data;
-        }
-    })
-
-
-  console.log(trails)
-  
+  console.log(trails);
+  console.log(filters);
 
   return (
     <div className="lg:px-14">
@@ -83,8 +111,15 @@ const HomePage = () => {
         <div className="mb-10">
           <h2 className="text-2xl">Awesome trails in Helsinki</h2>
         </div>
-        <div className="filters">
-          <FilterDropdownDifficulty  values={filters.difficulties} onChange={handleDifficultyChange} />
+        <div className="filters flex gap-5">
+          <FilterDropdownDifficulty
+            values={filters.difficulties}
+            onChange={handleDifficultyChange}
+          />
+          <KilometerFiltering
+            value={filters.kilometers ?? {}}
+            onChange={handleKilometersChange}
+          />
         </div>
         <div className="grid grid-cols-3 gap-4">
           {trails?.map((trail: Trail) => (

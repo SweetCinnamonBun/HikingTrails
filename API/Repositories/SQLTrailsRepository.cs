@@ -35,7 +35,8 @@ namespace API.Repositories
             return existingTrail;
         }
 
-        public async Task<List<Trail>> GetAllAsync(string? filterOn = null, string? filterQuery = null, List<string>? difficulties = null,
+        public async Task<List<Trail>> GetAllAsync(string? filterOn = null,
+         string? filterQuery = null, List<string>? difficulties = null, double? minKm = null, double? maxKm = null,
          string? sortBy = null, bool isAscending = true, int page = 1, int pageSize = 50)
         {
             var trails = context.Trails.Include("Difficulty").Include("Region").AsQueryable();
@@ -48,9 +49,21 @@ namespace API.Repositories
                 }
             }
 
+            // Difficulty filtering
             if (difficulties != null && difficulties.Count != 0)
             {
                 trails = trails.Where(t => difficulties.Contains(t.Difficulty.Name));
+            }
+
+            // Kilometer filtering
+            if (minKm.HasValue)
+            {
+                trails = trails.Where(t => t.LengthInKm >= minKm.Value);
+            }
+
+            if (maxKm.HasValue)
+            {
+                trails = trails.Where(t => t.LengthInKm <= maxKm.Value);
             }
 
             if (string.IsNullOrWhiteSpace(sortBy) == false)
@@ -71,10 +84,6 @@ namespace API.Repositories
 
         }
 
-        public Task<List<Trail>> GetAllAsync(string? filterOn = null, string? filterQuery = null, string? sortBy = null, bool isAscending = true, int page = 1, int pageSize = 50)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<Trail?> GetByIdAsync(string id)
         {
