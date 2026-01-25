@@ -9,8 +9,11 @@ import KilometerFiltering from "../components/KilometerFiltering";
 import DurationFiltering from "../components/DurationFiltering";
 import SearchBox from "../components/SearchBox";
 import SelectedFilter from "../components/SelectedFilter"; // ✅ import
+import { BarLoader, BeatLoader, ClimbingBoxLoader, ClipLoader, FadeLoader, HashLoader, MoonLoader, PropagateLoader, PuffLoader, RiseLoader, SyncLoader } from "react-spinners";
+
 
 import type { Difficulty, Trail } from "../types/trail";
+import NoResults from "../components/NoResults";
 
 type KilometerRange = {
   min?: number;
@@ -45,26 +48,41 @@ const HomePage = () => {
     duration: {},
   });
 
-  const difficultyQuery = filters.difficulties
-    .map((x) => `difficulties=${encodeURIComponent(x.name)}`);
+  const difficultyQuery = filters.difficulties.map(
+    (x) => `difficulties=${encodeURIComponent(x.name)}`,
+  );
   const kilometerQuery = [
-    filters.kilometers?.min !== undefined ? `minKm=${filters.kilometers.min}` : null,
-    filters.kilometers?.max !== undefined ? `maxKm=${filters.kilometers.max}` : null,
+    filters.kilometers?.min !== undefined
+      ? `minKm=${filters.kilometers.min}`
+      : null,
+    filters.kilometers?.max !== undefined
+      ? `maxKm=${filters.kilometers.max}`
+      : null,
   ].filter(Boolean);
   const durationQuery = [
-    filters.duration?.min !== undefined ? `minDuration=${filters.duration.min}` : null,
-    filters.duration?.max !== undefined ? `maxDuration=${filters.duration.max}` : null,
+    filters.duration?.min !== undefined
+      ? `minDuration=${filters.duration.min}`
+      : null,
+    filters.duration?.max !== undefined
+      ? `maxDuration=${filters.duration.max}`
+      : null,
   ].filter(Boolean);
 
-  const queryString = [...difficultyQuery, ...kilometerQuery, ...durationQuery].join("&");
+  const queryString = [
+    ...difficultyQuery,
+    ...kilometerQuery,
+    ...durationQuery,
+  ].join("&");
 
- const { data: trails, isLoading: isLoadingTrails } = useQuery<Trail[], Error>({
-  queryKey: ["trails", filters],
-  queryFn: async () => {
-    const response = await agent.get(`/api/trails?${queryString}`);
-    return response.data as Trail[];
-  },
-});
+  const { data: trails, isLoading: isLoadingTrails } = useQuery<Trail[], Error>(
+    {
+      queryKey: ["trails", filters],
+      queryFn: async () => {
+        const response = await agent.get(`/api/trails?${queryString}`);
+        return response.data as Trail[];
+      },
+    },
+  );
 
   // handle change functions
   const handleDifficultyChange = (values: Difficulty[]) => {
@@ -142,7 +160,9 @@ const HomePage = () => {
               onRemove={() =>
                 setFilters((prev) => ({
                   ...prev,
-                  difficulties: prev.difficulties.filter((d) => d.id !== difficulty.id),
+                  difficulties: prev.difficulties.filter(
+                    (d) => d.id !== difficulty.id,
+                  ),
                   page: 1,
                 }))
               }
@@ -167,11 +187,21 @@ const HomePage = () => {
             />
           )}
         </div>
-        <div className="grid grid-cols-3 gap-4">
-          {trails?.map((trail: Trail) => (
-            <Card key={trail.id} trail={trail} />
-          ))}
-        </div>
+        {isLoadingTrails ? (
+          <div className="w-full h-150 rounded-4xl bg-gray-100 flex items-center justify-center">
+            <PuffLoader color="#3bcc1e" loading={isLoadingTrails} />
+          </div>
+        ) : trails?.length ? (
+          <div className="grid grid-cols-3 gap-4">
+            {trails.map((trail: Trail) => (
+              <Card key={trail.id} trail={trail} />
+            ))}
+          </div>
+        ) : (
+          <div className="w-full bg-gray-100 h-150 flex items-center justify-center rounded-lg">
+            <NoResults message="No trails match your filters" />
+          </div>
+        )}
       </section>
     </div>
   );
