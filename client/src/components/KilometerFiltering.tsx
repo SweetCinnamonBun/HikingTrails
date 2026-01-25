@@ -19,13 +19,17 @@ const KilometerFiltering: React.FC<KilometerFilteringProps> = ({
   const [toKm, setToKm] = useState<number | "">(value.max ?? "");
 
   return (
-    <div className="relative w-56">
+    <div className="relative w-50">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         className="w-full px-4 py-2 hover:bg-gray-300 border border-gray-300 rounded-lg bg-white flex justify-between items-center"
       >
-        <span className="text-sm">Kilometer</span>
+        <span className="text-sm">
+          {value.min !== undefined || value.max !== undefined
+            ? `Kilometer: ${value.min ?? 0}–${value.max ?? "∞"} km`
+            : "Kilometer"}
+        </span>
         <span>▾</span>
       </button>
       {open && (

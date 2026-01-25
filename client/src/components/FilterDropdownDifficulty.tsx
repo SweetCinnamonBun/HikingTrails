@@ -42,7 +42,7 @@ const FilterDropdownDifficulty: React.FC<FilterDropdownProps> = ({
     
 
   return (
-    <div className="relative w-56">
+    <div className="relative w-44">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
