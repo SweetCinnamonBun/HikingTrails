@@ -36,11 +36,11 @@ const Navbar = () => {
               <FaHeart />
               <span>Favorites</span>
             </Link>
-            <Link to="/dashboard" className="flex flex-col items-center hover:text-purple-500">
+            <Link to="/create-trail" className="flex flex-col items-center hover:text-purple-500">
               <GiTrail />
               <span>Create Trail</span>
             </Link>
-            <Link to="/dashboard" className="flex flex-col items-center hover:text-purple-500">
+            <Link to="/create-region" className="flex flex-col items-center hover:text-purple-500">
               <IoTrailSignSharp />
               <span>Create Region</span>
             </Link>

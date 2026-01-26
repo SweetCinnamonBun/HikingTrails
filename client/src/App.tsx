@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import HomePage from "./pages/HomePage";
 import RootLayout from "./components/RootLayout";
+import CreateTrailPage from "./pages/CreateTrailPage";
 
 
 
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: "/create-trail",
+        element: <CreateTrailPage />
       }
     ],
   }
