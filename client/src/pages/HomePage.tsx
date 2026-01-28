@@ -74,7 +74,7 @@ const HomePage = () => {
     ...durationQuery,
   ].join("&");
 
-  const { data: trails, isLoading: isLoadingTrails } = useQuery<Trail[], Error>(
+  const { data: trails, isLoading: isLoadingTrails } = useQuery(
     {
       queryKey: ["trails", filters],
       queryFn: async () => {

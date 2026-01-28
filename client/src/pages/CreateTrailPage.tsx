@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import type { Difficulty, Region } from "../types/trail";
+import { FaImage } from "react-icons/fa";
+import { useQuery } from "@tanstack/react-query";
+import agent from "../lib/api/agent";
 
 type CreateTrailFormValues = {
   name: string;
@@ -12,7 +15,6 @@ type CreateTrailFormValues = {
   regionId: string;
 };
 
-// ✅ STATIC DIFFICULTIES LIST
 const difficulties: Difficulty[] = [
   {
     id: "2a755f9c-9ee0-4865-b6fa-348bfa1959ba",
@@ -37,15 +39,40 @@ const CreateTrailPage: React.FC = () => {
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
-  // 🔁 Replace later with real data
-  const regions: Region[] = [];
+  const { data: fetchedRegions = [] } = useQuery({
+    queryKey: ["regions-for-creation"],
+    queryFn: async () => {
+      const response = await agent.get("/api/regions");
+      return response.data;
+    },
+    staleTime: 20000,
+    refetchOnWindowFocus: false,
+  });
+
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("ImageFile", file);
+
+    const response = await agent.post("/api/images/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data.imageUrl;
+  };
 
   const onSubmit = async (data: CreateTrailFormValues) => {
     try {
-      let imageUrl: string | undefined;
+      if (!data.image?.[0]) {
+        console.error("No image selected");
+        return;
+      }
 
-      if (data.image?.[0]) {
-        imageUrl = URL.createObjectURL(data.image[0]);
+      const imageUrl = await uploadImage(data.image[0]);
+
+      if (!imageUrl) {
+        console.error("Image upload failed – trail not created");
+        return;
       }
 
       const payload = {
@@ -59,11 +86,12 @@ const CreateTrailPage: React.FC = () => {
       };
 
       console.log("CreateTrailDto:", payload);
+
+      await agent.post("/api/trails", payload);
     } catch (error) {
       console.error("Failed to create trail", error);
     }
   };
-
   return (
     <div className="max-w-5xl mx-auto p-6 border-2 border-gray-300 rounded-2xl my-10">
       <h1 className="text-4xl font-bold mb-8">Create new trail</h1>
@@ -96,16 +124,30 @@ const CreateTrailPage: React.FC = () => {
         <div className="flex flex-col gap-3">
           <label className="font-semibold">Trail image</label>
           <input
+            id="trail-image"
             type="file"
             accept="image/*"
-            {...register("image")}
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                setPreviewImage(URL.createObjectURL(file));
-              }
-            }}
+            className="hidden"
+            {...register("image", {
+              required: true,
+              onChange: (e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setPreviewImage(URL.createObjectURL(file));
+                }
+              },
+            })}
           />
+
+          <label
+            htmlFor="trail-image"
+            className="flex items-center gap-3 px-4 py-3 w-fit
+               bg-green-500 text-white rounded-xl cursor-pointer
+               hover:bg-green-700 transition"
+          >
+            <FaImage className="w-5 h-5" />
+            <span>Select an image</span>
+          </label>
 
           {previewImage && (
             <img
@@ -145,15 +187,17 @@ const CreateTrailPage: React.FC = () => {
             className="bg-gray-100 px-4 py-3 rounded-xl"
             {...register("difficultyId", { required: true })}
           >
-            <option value="">Select difficulty</option>
+            <option className="bg-gray-100 p-4" value="">
+              Select difficulty
+            </option>
             {difficulties.map((d) => (
-              <option key={d.id} value={d.id}>
+              <option className="bg-gray-100 p-4" key={d.id} value={d.id}>
                 {d.name}
               </option>
             ))}
           </select>
         </div>
-
+        {/* Regions */}
         <div className="flex flex-col gap-2 max-w-xs">
           <label className="font-semibold">Region</label>
           <select
@@ -161,14 +205,14 @@ const CreateTrailPage: React.FC = () => {
             {...register("regionId", { required: true })}
           >
             <option value="">Select region</option>
-            {regions.map((r) => (
+            {fetchedRegions.map((r: Region) => (
               <option key={r.id} value={r.id}>
                 {r.name}
               </option>
             ))}
           </select>
         </div>
-
+        {/* Submit */}
         <button
           type="submit"
           disabled={isSubmitting}
