@@ -1,6 +1,7 @@
 using API.Data;
 using API.Mappings;
 using API.Repositories;
+using API.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -15,6 +16,11 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<HikingContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+builder.Services.AddSingleton<AzureBlobStorageService>(provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    return new AzureBlobStorageService(configuration);
 });
 
 builder.Services.AddScoped<ITrailsRepository, SQLTrailsRepository>();
