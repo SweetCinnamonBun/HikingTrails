@@ -14,7 +14,7 @@ const Card: React.FC<CardProps> = ({ trail }) => {
       <figure className="h-56 w-full overflow-hidden">
         <img
           className="h-full w-full object-cover"
-          src="https://recipevaultstorage.blob.core.windows.net/recipevaultcontainer/10349454-9b5e-4b81-94ab-b3e19082fa71.jpg"
+          src={trail?.imageUrl || "https://recipevaultstorage.blob.core.windows.net/recipevaultcontainer/10349454-9b5e-4b81-94ab-b3e19082fa71.jpg"}
           alt="Korpinkierros, Nuuksio National Park"
         />
       </figure>
